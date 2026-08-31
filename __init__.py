@@ -1313,7 +1313,15 @@ def _multi_deck_hero() -> str:
         rev_n = int(standing.get("due") or 0)
         total = new_n + learn_n + rev_n
         target_did = int(mw.col.decks.get_current_id())
-        target_name = html.escape(mw.col.decks.name(target_did) or "Current deck")
+        # Anki's deck-manager name helper changed across releases. Keep the
+        # action usable even when the optional label cannot be resolved.
+        target_name = "Current deck"
+        try:
+            deck = mw.col.decks.get(target_did) or {}
+            target_name = str(deck.get("name") or target_name)
+        except Exception:
+            pass
+        target_name = html.escape(target_name)
         disabled = "ba-hero--done" if not total else ""
         tabindex = "-1" if disabled else "0"
         click = "" if disabled else f"pycmd('ba:study:{target_did}')"

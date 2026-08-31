@@ -258,10 +258,13 @@ body:has(.ba-home) .ba-home { position: relative; z-index: 1; }
   }
 }
 
-/* order: hero (single-deck) or deck list → practice section (stats + heatmap) */
+/* order: Today → assessment → decks → practice/stats */
 .ba-home .ba-hero { order: 0; }
-.ba-home > table { order: 1; }
-.ba-home .ba-practice { order: 2; }
+.ba-home .ba-deck-head { order: 0; }
+.ba-home .d2-assessment { order: 1; }
+.ba-home > table,
+.ba-home > .ad-list--home { order: 2; }
+.ba-home .ba-practice { order: 3; }
 /* Legacy classes the addon no longer renders — safety net for stale state. */
 .ba-mast, .ba-mast-row, .ba-stand, .ba-actions { display: none !important; }
 
