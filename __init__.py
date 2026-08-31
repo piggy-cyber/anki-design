@@ -176,6 +176,10 @@ def on_webview_will_set_content(web_content: WebContent, context: Optional[Any])
     if not themed:
         return
 
+    if QTimer is not None:
+        QTimer.singleShot(0, _set_fourth_canal_window_title)
+        QTimer.singleShot(100, _set_fourth_canal_window_title)
+
     cfg = _config()
     accent = cfg.get("accent", "#2563EB")
     home_background = _home_background_url(cfg)
@@ -4081,6 +4085,7 @@ def _schedule_fourth_canal_window_title(*_args: Any) -> None:
     if QTimer is not None:
         QTimer.singleShot(0, _set_fourth_canal_window_title)
         QTimer.singleShot(250, _set_fourth_canal_window_title)
+        QTimer.singleShot(1000, _set_fourth_canal_window_title)
 
 
 gui_hooks.profile_did_open.append(_dev_start)
