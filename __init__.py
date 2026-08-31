@@ -1305,30 +1305,19 @@ def _single_deck_hero() -> str:
 
 
 def _multi_deck_hero() -> str:
-    """Cross-deck Today card with a concrete, collection-safe next action."""
+    """Cross-deck Today card using the user's current deck as next action."""
     try:
-        tree = mw.col.sched.deck_due_tree()
-        decks = list(getattr(tree, "children", []) or [])
-        if not decks:
-            return ""
-        new_n = sum(int(getattr(deck, "new_count", 0) or 0) for deck in decks)
-        learn_n = sum(int(getattr(deck, "learn_count", 0) or 0) for deck in decks)
-        rev_n = sum(int(getattr(deck, "review_count", 0) or 0) for deck in decks)
+        standing = _standing()
+        new_n = int(standing.get("new") or 0)
+        learn_n = int(standing.get("learn") or 0)
+        rev_n = int(standing.get("due") or 0)
         total = new_n + learn_n + rev_n
-        target = next(
-            (
-                deck for deck in decks
-                if int(getattr(deck, "new_count", 0) or 0)
-                + int(getattr(deck, "learn_count", 0) or 0)
-                + int(getattr(deck, "review_count", 0) or 0) > 0
-            ),
-            None,
-        )
-        disabled = "ba-hero--done" if not total or target is None else ""
+        target_did = int(mw.col.decks.get_current_id())
+        target_name = html.escape(mw.col.decks.name(target_did) or "Current deck")
+        disabled = "ba-hero--done" if not total else ""
         tabindex = "-1" if disabled else "0"
-        click = "" if target is None else f"pycmd('ba:study:{int(getattr(target, 'deck_id', 0))}')"
+        click = "" if disabled else f"pycmd('ba:study:{target_did}')"
         action = "All caught up" if disabled else "Start reviews →"
-        target_name = html.escape(getattr(target, "name", "next deck")) if target else ""
         return f"""
         <header class="ba-deck-head ba-rise ba-today-headline">
           <div>
