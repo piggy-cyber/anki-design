@@ -176,6 +176,32 @@ body::before {
   z-index: -1;
   background: var(--rf-glow);
 }
+/* D2 Study Cockpit background: only the deck homepage receives artwork.
+   Overview, reviewer, editor, and exam surfaces remain distraction-free. */
+body:has(.ba-home)::before {
+  z-index: 0;
+  opacity: 0.92;
+  background-image:
+    linear-gradient(90deg,
+      color-mix(in srgb, var(--rf-paper) 97%, transparent) 0%,
+      color-mix(in srgb, var(--rf-paper) 91%, transparent) 42%,
+      color-mix(in srgb, var(--rf-paper) 52%, transparent) 100%),
+    var(--d2-home-background);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+body:has(.ba-home) > * { position: relative; z-index: 1; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-rf-theme="light"]) body:has(.ba-home)::before {
+    opacity: 0.34;
+    filter: saturate(.5) brightness(.48) contrast(1.12);
+  }
+}
+:root[data-rf-theme="dark"] body:has(.ba-home)::before {
+  opacity: 0.34;
+  filter: saturate(.5) brightness(.48) contrast(1.12);
+}
 .descfont { color: var(--rf-ink-dim) !important; }
 
 /* a single utility for ledger figures: clean sans tabular, NOT serif */
@@ -417,6 +443,13 @@ body::before {
   width: 100%;
   max-width: var(--rf-measure);
   margin: 0 auto;
+  padding: 12px 14px;
+  border: 1px solid var(--rf-line);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--rf-panel) 84%, transparent);
+  box-shadow: 0 20px 55px rgba(44, 65, 130, 0.07);
+  -webkit-backdrop-filter: blur(18px) saturate(112%);
+  backdrop-filter: blur(18px) saturate(112%);
 }
 .ba-home #studiedToday { display: none !important; }
 
@@ -425,6 +458,14 @@ body::before {
   width: 100%;
   max-width: var(--rf-measure);
   margin: 36px auto 0;
+  padding: 22px 24px;
+  border: 1px solid var(--rf-line);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--rf-panel) 82%, transparent);
+  box-shadow: 0 20px 55px rgba(44, 65, 130, 0.06);
+  -webkit-backdrop-filter: blur(18px) saturate(112%);
+  backdrop-filter: blur(18px) saturate(112%);
+  box-sizing: border-box;
 }
 /* Heatmap inside the practice section — no panel chrome, just the grid. */
 .ba-home .ba-practice .rf-heatmap {
@@ -819,6 +860,23 @@ body::before {
   flex: 1;
   min-width: 0;
 }
+.ba-today-headline { align-items: end; margin-bottom: 8px; }
+.ba-today-kicker {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--rf-accent, #4d6fe3);
+  font: 750 10px/1 var(--rf-sans);
+  letter-spacing: .19em;
+}
+.ba-today-target {
+  max-width: 42%;
+  padding-bottom: 8px;
+  overflow: hidden;
+  color: var(--rf-ink-dim);
+  font: 600 11px/1.2 var(--rf-sans);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 /* Deck options gear — sits next to the title, opens this deck's options. */
 .ba-deck-opts {
   -webkit-appearance: none;
@@ -887,6 +945,18 @@ body::before {
 }
 
 .ba-hero.ba-hero--done .ba-hero-go { display: none; }
+.ba-hero-go {
+  display: block;
+  position: absolute;
+  top: 18px;
+  right: 22px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: var(--rf-accent, #4d6fe3);
+  color: #fff;
+  font: 700 10px/1 var(--rf-sans);
+  letter-spacing: .04em;
+}
 .ba-hero-arrow {
   font-family: var(--rf-sans);
   font-weight: 500;

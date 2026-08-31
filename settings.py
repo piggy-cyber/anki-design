@@ -12,6 +12,7 @@ each change, separate from Anki's own Save/Cancel cycle.
 """
 
 import os
+import shutil
 from typing import Any, Dict, List, Optional, Tuple
 
 from aqt import mw
@@ -27,6 +28,7 @@ from aqt.qt import (
     QFont,
     QFontDatabase,
     QFrame,
+    QFileDialog,
     QHBoxLayout,
     QIcon,
     QLabel,
@@ -58,7 +60,7 @@ def _icon_url(name: str) -> str:
 
 
 ADDON = __name__.split(".")[0]
-TAB_TITLE = "Anki Design"
+TAB_TITLE = "D2 Study Lab"
 PAGE_OBJECT_NAME = "baSettings"
 
 
@@ -893,6 +895,25 @@ class AnkiDesignSettingsPage(QWidget):
             "Compact fits more on screen; Comfortable gives each row more air.",
         ))
 
+        background_box = QWidget()
+        bg = QHBoxLayout(background_box)
+        bg.setContentsMargins(0, 0, 0, 0)
+        bg.setSpacing(10)
+        self._background_value = QLabel()
+        self._background_value.setProperty("role", "hint")
+        choose_background = QPushButton("Choose image…")
+        choose_background.clicked.connect(self._choose_home_background)
+        reset_background = QPushButton("Use D2 default")
+        reset_background.clicked.connect(self._reset_home_background)
+        bg.addWidget(choose_background)
+        bg.addWidget(reset_background)
+        bg.addWidget(self._background_value, 1)
+        self._update_background_label()
+        v.addWidget(_field_row(
+            "Home background", background_box,
+            "Shown only on the deck homepage. Selected files are copied into private user_files.",
+        ))
+
         # ----- Features ----- #
         # Order matters here: the two "Hide bottom strip" toggles sit at the
         # end as a deliberate pair (deck list / deck overview). They share
@@ -1155,7 +1176,7 @@ class AnkiDesignSettingsPage(QWidget):
         fi = QHBoxLayout(footer_inner)
         fi.setContentsMargins(44, 16, 44, 16)
         fi.setSpacing(16)
-        restore = QPushButton("Restore Anki Design defaults")
+        restore = QPushButton("Restore D2 Study Lab defaults")
         restore.setObjectName("quiet")
         restore.setCursor(Qt.CursorShape.PointingHandCursor)
         restore.clicked.connect(self._restore_defaults)
@@ -1235,6 +1256,43 @@ class AnkiDesignSettingsPage(QWidget):
         self._palette, _ = _resolve_palette()
         self._apply_styles()
 
+    def _update_background_label(self) -> None:
+        value = str(self._g("home_background", "default"))
+        label = "D2 dental atlas" if not value or value == "default" else os.path.basename(value)
+        try:
+            self._background_value.setText(label)
+        except Exception:
+            pass
+
+    def _choose_home_background(self) -> None:
+        path, _selected = QFileDialog.getOpenFileName(
+            self,
+            "Choose home background",
+            "",
+            "Images (*.png *.jpg *.jpeg *.webp);;All files (*)",
+        )
+        if not path:
+            return
+        extension = os.path.splitext(path)[1].lower()
+        if extension not in (".png", ".jpg", ".jpeg", ".webp"):
+            extension = ".png"
+        filename = f"home-background{extension}"
+        target_dir = os.path.join(HERE, "user_files", "backgrounds")
+        target = os.path.join(target_dir, filename)
+        try:
+            os.makedirs(target_dir, exist_ok=True)
+            shutil.copy2(path, target)
+        except OSError as error:
+            from aqt.utils import showWarning
+            showWarning(f"Could not copy background image:\n{error}", parent=self)
+            return
+        self._set("home_background", filename)
+        self._update_background_label()
+
+    def _reset_home_background(self) -> None:
+        self._set("home_background", "default")
+        self._update_background_label()
+
     def _restore_defaults(self) -> None:
         defaults = {
             "theme": "system",
@@ -1252,6 +1310,7 @@ class AnkiDesignSettingsPage(QWidget):
             "reviewer_font_size": "medium",
             "font_serif": "",
             "font_sans": "",
+            "home_background": "default",
         }
         self._cfg = defaults
         try:

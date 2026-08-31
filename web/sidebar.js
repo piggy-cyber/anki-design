@@ -213,20 +213,12 @@
     var aside = document.createElement("aside");
     aside.className = "ba-side";
     aside.innerHTML = ''
-      // Wordmark — Anki Design lockup. Rendered as coded markup so the
-      // two-typeface lockup (Helvetica anki + Architects Daughter DESIGN
-      // with red period) scales from a single CSS variable.
+      // Personal D2 Study Lab wordmark. Clicking it always returns home.
       + '<div class="ba-side-head">'
-      +   '<span class="ad-logo ba-side-mark" aria-label="Anki Design">'
-      +     '<span class="ad-mark">anki<span class="ad-dot" aria-hidden="true"><span class="ad-pupil"></span></span></span>'
-      +     '<span class="ad-design">'
-      +       '<span class="ad-d">D</span>'
-      +       '<span class="ad-e">E</span>'
-      +       '<span class="ad-s">S</span>'
-      +       '<span class="ad-i">I</span>'
-      +       '<span class="ad-g">G</span>'
-      +       '<span class="ad-n">N</span>'
-      +     '</span>'
+      +   '<span class="d2-wordmark ba-side-mark" aria-label="D2 Study Lab">'
+      +     '<span class="d2-wordmark-mark">D2</span>'
+      +     '<span class="d2-wordmark-rule" aria-hidden="true"></span>'
+      +     '<span class="d2-wordmark-copy">STUDY<br>LAB</span>'
       +   '</span>'
       + '</div>'
       // Cross-deck totals — hidden in single-deck mode (the hero owns them).
@@ -239,19 +231,19 @@
       +     '<dt>Learning</dt><dd data-x="learn">—</dd></div>'
       + '</dl>';
 
-    // Wordmark opens anki.design (in the user's default browser, via Python).
+    // Wordmark returns to the deck homepage.
     var mark = aside.querySelector(".ba-side-mark");
     if (mark) {
       mark.setAttribute("role", "link");
       mark.setAttribute("tabindex", "0");
       mark.addEventListener("click", function (e) {
         e.preventDefault();
-        send("website");
+        send("decks");
       });
       mark.addEventListener("keydown", function (e) {
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
-          send("website");
+          send("decks");
         }
       });
 

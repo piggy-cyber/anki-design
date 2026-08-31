@@ -56,15 +56,30 @@ try:
 except Exception:
     QTimer = None
 
-ADDON_DIR = os.path.basename(os.path.dirname(__file__))
+ADDON_PATH = os.path.dirname(__file__)
+ADDON_DIR = os.path.basename(ADDON_PATH)
 WEB = f"/_addons/{ADDON_DIR}/web"
+DEFAULT_HOME_BACKGROUND = f"{WEB}/assets/d2-dental-atlas.jpg"
 
 # Let Anki serve our static files to the embedded web views.
-mw.addonManager.setWebExports(__name__, r"web/.*")
+mw.addonManager.setWebExports(__name__, r"(web/.*|user_files/backgrounds/.*)")
 
 
 def _config() -> Dict[str, Any]:
     return mw.addonManager.getConfig(__name__) or {}
+
+
+def _home_background_url(cfg: Dict[str, Any]) -> str:
+    filename = os.path.basename(str(cfg.get("home_background", "")))
+    if filename and filename != "default":
+        path = os.path.join(ADDON_PATH, "user_files", "backgrounds", filename)
+        if os.path.isfile(path):
+            try:
+                version = int(os.path.getmtime(path))
+            except OSError:
+                version = 0
+            return f"/_addons/{ADDON_DIR}/user_files/backgrounds/{filename}?v={version}"
+    return DEFAULT_HOME_BACKGROUND
 
 
 # Fixed-palette heatmaps. Four shades, low intensity → high.
@@ -159,6 +174,7 @@ def on_webview_will_set_content(web_content: WebContent, context: Optional[Any])
 
     cfg = _config()
     accent = cfg.get("accent", "#6c8cff")
+    home_background = _home_background_url(cfg)
     theme_pref = cfg.get("theme", "system")  # "system" | "light" | "dark"
     density = cfg.get("density", "comfortable")
     palette_choice = cfg.get("heatmap_palette", "accent")
@@ -209,6 +225,7 @@ def on_webview_will_set_content(web_content: WebContent, context: Optional[Any])
     web_content.head += (
         f"<style>:root,.night-mode,body{{"
         f"--rf-accent:{accent};"
+        f"--d2-home-background:url('{home_background}');"
         f"{serif_decl}{sans_decl}{reviewer_decl}"
         f"}}{hm_rules}</style>"
         + extras
@@ -667,11 +684,14 @@ def on_deck_browser_will_render_content(
             heatmap = build_heatmap_html(int(cfg.get("heatmap_weeks", 53)))
         except Exception as e:
             heatmap = f"<!-- anki-design heatmap error: {e} -->"
-    # Single-deck hero replaces the table (CSS hides the table in this mode).
+    # The D2 Study Cockpit always leads with a Today action. Single-deck mode
+    # uses the selected deck; multi-deck mode starts the first deck with work.
     hero = ""
     try:
         if _top_decks_count() == 1:
             hero = _single_deck_hero()
+        else:
+            hero = _multi_deck_hero()
     except Exception:
         pass
     # Pulse strip (cards today · lifetime · streak) leads the practice
@@ -1279,6 +1299,59 @@ def _single_deck_hero() -> str:
             }});
           }})();
         </script>
+        """
+    except Exception:
+        return ""
+
+
+def _multi_deck_hero() -> str:
+    """Cross-deck Today card with a concrete, collection-safe next action."""
+    try:
+        tree = mw.col.sched.deck_due_tree()
+        decks = list(getattr(tree, "children", []) or [])
+        if not decks:
+            return ""
+        new_n = sum(int(getattr(deck, "new_count", 0) or 0) for deck in decks)
+        learn_n = sum(int(getattr(deck, "learn_count", 0) or 0) for deck in decks)
+        rev_n = sum(int(getattr(deck, "review_count", 0) or 0) for deck in decks)
+        total = new_n + learn_n + rev_n
+        target = next(
+            (
+                deck for deck in decks
+                if int(getattr(deck, "new_count", 0) or 0)
+                + int(getattr(deck, "learn_count", 0) or 0)
+                + int(getattr(deck, "review_count", 0) or 0) > 0
+            ),
+            None,
+        )
+        disabled = "ba-hero--done" if not total or target is None else ""
+        tabindex = "-1" if disabled else "0"
+        click = "" if target is None else f"pycmd('ba:study:{int(getattr(target, 'deck_id', 0))}')"
+        action = "All caught up" if disabled else "Start reviews →"
+        target_name = html.escape(getattr(target, "name", "next deck")) if target else ""
+        return f"""
+        <header class="ba-deck-head ba-rise ba-today-headline">
+          <div>
+            <span class="ba-today-kicker">TODAY</span>
+            <h1 class="ba-deck-name">Your study queue</h1>
+          </div>
+          <span class="ba-today-target">{target_name}</span>
+        </header>
+        <button class="ba-hero ba-rise {disabled}" tabindex="{tabindex}"
+                onclick="{click}" aria-label="Start today's reviews">
+          <div class="ba-hero-stats">
+            <div class="ba-hero-stat ba-due">
+              <span class="ba-hero-n">{rev_n}</span><span class="ba-hero-l">Due</span>
+            </div>
+            <div class="ba-hero-stat ba-new">
+              <span class="ba-hero-n">{new_n}</span><span class="ba-hero-l">New</span>
+            </div>
+            <div class="ba-hero-stat ba-learn">
+              <span class="ba-hero-n">{learn_n}</span><span class="ba-hero-l">Learning</span>
+            </div>
+          </div>
+          <span class="ba-hero-go">{action}</span>
+        </button>
         """
     except Exception:
         return ""
@@ -3762,28 +3835,6 @@ def _dev_run_cmd(raw: str) -> None:
                     except Exception:
                         pass
                 rv.web.evalWithCallback(js, _cb)
-        elif cmd.startswith("pyeval:"):
-            # Dev-only: exec arbitrary Python on the Qt main thread. `mw` is
-            # in scope; anything assigned to `result` is logged. Used by the
-            # showcase capture pipeline (window geometry, ui scale, etc.).
-            code = raw.split(":", 1)[1]
-            try:
-                ns: dict = {"mw": mw, "result": None}
-                exec(code, globals(), ns)
-                _dev_cmd_log(f"pyeval ok: result={ns.get('result')!r}")
-            except Exception as e:
-                _dev_cmd_log(f"pyeval err: {e!r}")
-        elif cmd.startswith("pyfile:"):
-            # Same, but reads the code from a file — survives newlines.
-            path = cmd.split(":", 1)[1].strip()
-            try:
-                with open(path) as fh:
-                    code = fh.read()
-                ns2: dict = {"mw": mw, "result": None}
-                exec(code, globals(), ns2)
-                _dev_cmd_log(f"pyfile ok: result={ns2.get('result')!r}")
-            except Exception as e:
-                _dev_cmd_log(f"pyfile err: {e!r}")
         elif cmd.startswith("dump_bottom"):
             # Print the bottom bar's outerHTML to stdout (via a tempfile).
             import json as _json
@@ -4012,24 +4063,6 @@ def _dev_cmd_start() -> None:
     t.start()
 
 
-def _dev_showcase_arrange() -> None:
-    """Dev-only, opt-in via AD_SHOWCASE env: pin the main window to a known
-    geometry and suppress the in-window menubar BEFORE the first webview
-    render. Doing this mid-session (resize + menubar relayout) can wedge
-    QtWebEngine's surface under a WM-less Xvfb, so it must happen here."""
-    if not _dev_active() or not os.environ.get("AD_SHOWCASE"):
-        return
-    try:
-        geo = os.environ.get("AD_SHOWCASE_GEO", "1200x1010")
-        w, h = (int(x) for x in geo.split("x"))
-        mw.form.menubar.setMaximumHeight(0)
-        mw.move(0, 0)
-        mw.resize(w, h)
-    except Exception:
-        pass
-
-
-gui_hooks.profile_did_open.append(_dev_showcase_arrange)
 gui_hooks.profile_did_open.append(_dev_start)
 gui_hooks.profile_did_open.append(_dev_cmd_start)
 gui_hooks.main_window_did_init.append(_dev_start)

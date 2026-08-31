@@ -1,4 +1,15 @@
-# Anki Design
+# D2 Study Lab — Anki Design Fork
+
+Rick's personal D2 study cockpit, maintained as a fork of
+[NoahLloyd/anki-design](https://github.com/NoahLloyd/anki-design). The fork
+keeps the upstream interface while adding the D2 Study Lab wordmark, a
+dental-atlas homepage, private background selection, and mock-exam integration.
+
+Private files under `user_files/` are intentionally excluded from Git. Fetch
+and merge upstream changes through the `upstream` remote; AnkiWeb automatic
+updates are disabled for this customized installation.
+
+## Upstream project
 
 A from-scratch Anki UI redesign add-on. One cohesive thing you control,
 replacing Onigiri + a separate progress bar + a separate heatmap.

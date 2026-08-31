@@ -46,19 +46,41 @@ body.ba-with-side {
 .ba-side-head {
   padding: 0 4px 18px;
 }
-/* The wordmark itself is rendered as the .ad-logo lockup (web/logo.css).
-   Here we just position it in the rail at the right size and pin the ink
-   color to the current theme's --rf-ink. */
-.ba-side-mark.ad-logo {
-  --ad-logo-size: 20px;
-  --ad-logo-ink: var(--rf-ink);
+/* Personal D2 Study Lab wordmark. */
+.ba-side-mark.d2-wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--rf-ink);
   cursor: pointer;
   outline: none;
+  white-space: nowrap;
+  user-select: none;
 }
-.ba-side-mark.ad-logo:focus-visible {
+.ba-side-mark.d2-wordmark:focus-visible {
   outline: 2px solid var(--rf-accent, #6c8cff);
   outline-offset: 4px;
   border-radius: 4px;
+}
+.d2-wordmark-mark {
+  color: var(--rf-accent, #4d6fe3);
+  font: 700 31px/.9 var(--rf-serif);
+  letter-spacing: -0.06em;
+}
+.d2-wordmark-rule {
+  width: 1px;
+  height: 29px;
+  background: var(--rf-line-2);
+  transition: height 180ms ease, background 180ms ease;
+}
+.d2-wordmark-copy {
+  color: var(--rf-ink);
+  font: 750 10px/1.12 var(--rf-sans);
+  letter-spacing: .17em;
+}
+.d2-wordmark:hover .d2-wordmark-rule {
+  height: 34px;
+  background: var(--rf-accent, #4d6fe3);
 }
 
 /* ---------------------------- CMD-K LAUNCHER ---------------------------- */
