@@ -191,7 +191,7 @@ body:has(.ba-home)::before {
   background-repeat: no-repeat;
   background-size: cover;
 }
-body:has(.ba-home) > * { position: relative; z-index: 1; }
+body:has(.ba-home) .ba-home { position: relative; z-index: 1; }
 @media (prefers-color-scheme: dark) {
   :root:not([data-rf-theme="light"]) body:has(.ba-home)::before {
     opacity: 0.34;
