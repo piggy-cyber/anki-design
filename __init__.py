@@ -4063,8 +4063,26 @@ def _dev_cmd_start() -> None:
     t.start()
 
 
+def _set_fourth_canal_window_title(*_args: Any) -> None:
+    """Keep the installed product title stable after Anki state changes."""
+    try:
+        mw.setWindowTitle("Fourth Canal")
+    except Exception:
+        pass
+
+
+def _schedule_fourth_canal_window_title(*_args: Any) -> None:
+    _set_fourth_canal_window_title()
+    if QTimer is not None:
+        QTimer.singleShot(0, _set_fourth_canal_window_title)
+        QTimer.singleShot(250, _set_fourth_canal_window_title)
+
+
 gui_hooks.profile_did_open.append(_dev_start)
 gui_hooks.profile_did_open.append(_dev_cmd_start)
+gui_hooks.profile_did_open.append(_schedule_fourth_canal_window_title)
 gui_hooks.main_window_did_init.append(_dev_start)
 gui_hooks.main_window_did_init.append(_dev_cmd_start)
+gui_hooks.main_window_did_init.append(_schedule_fourth_canal_window_title)
+gui_hooks.state_did_change.append(_schedule_fourth_canal_window_title)
 gui_hooks.profile_will_close.append(_dev_shutdown)
