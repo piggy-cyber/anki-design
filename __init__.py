@@ -52,8 +52,9 @@ try:
 except Exception:
     _DeckBrowserBottomCtx = None
 try:
-    from aqt.qt import QTimer
+    from aqt.qt import QApplication, QTimer
 except Exception:
+    QApplication = None
     QTimer = None
 
 ADDON_PATH = os.path.dirname(__file__)
@@ -4066,6 +4067,10 @@ def _dev_cmd_start() -> None:
 def _set_fourth_canal_window_title(*_args: Any) -> None:
     """Keep the installed product title stable after Anki state changes."""
     try:
+        if QApplication is not None:
+            app = QApplication.instance()
+            if app is not None:
+                app.setApplicationDisplayName("Fourth Canal")
         mw.setWindowTitle("Fourth Canal")
     except Exception:
         pass
