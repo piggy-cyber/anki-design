@@ -59,7 +59,8 @@ except Exception:
 ADDON_PATH = os.path.dirname(__file__)
 ADDON_DIR = os.path.basename(ADDON_PATH)
 WEB = f"/_addons/{ADDON_DIR}/web"
-DEFAULT_HOME_BACKGROUND = f"{WEB}/assets/d2-dental-atlas.jpg"
+DEFAULT_HOME_BACKGROUND = "none"
+ATLAS_HOME_BACKGROUND = f"{WEB}/assets/d2-dental-atlas.jpg"
 
 # Let Anki serve our static files to the embedded web views.
 mw.addonManager.setWebExports(__name__, r"(web/.*|user_files/backgrounds/.*)")
@@ -71,7 +72,9 @@ def _config() -> Dict[str, Any]:
 
 def _home_background_url(cfg: Dict[str, Any]) -> str:
     filename = os.path.basename(str(cfg.get("home_background", "")))
-    if filename and filename != "default":
+    if filename == "atlas":
+        return ATLAS_HOME_BACKGROUND
+    if filename and filename not in ("default", "solid"):
         path = os.path.join(ADDON_PATH, "user_files", "backgrounds", filename)
         if os.path.isfile(path):
             try:
@@ -173,7 +176,7 @@ def on_webview_will_set_content(web_content: WebContent, context: Optional[Any])
         return
 
     cfg = _config()
-    accent = cfg.get("accent", "#6c8cff")
+    accent = cfg.get("accent", "#2563EB")
     home_background = _home_background_url(cfg)
     theme_pref = cfg.get("theme", "system")  # "system" | "light" | "dark"
     density = cfg.get("density", "comfortable")

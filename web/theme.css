@@ -35,16 +35,19 @@
 }
 
 :root {
-  --rf-paper: #0b0c0f;
-  --rf-panel: #121319;
-  --rf-ink: #eceae2;
-  --rf-ink-strong: #ffffff;
-  --rf-ink-dim: #9b978a;
-  --rf-ink-faint: #5d5a51;
-  --rf-line: rgba(236, 234, 226, 0.09);
-  --rf-line-2: rgba(236, 234, 226, 0.18);
-  --rf-row-hover: rgba(236, 234, 226, 0.04);
-  --rf-row-current: rgba(236, 234, 226, 0.03);
+  --rf-paper: #0F1E3A;
+  --rf-paper-2: #182A49;
+  --rf-paper-inset: #0C1930;
+  --rf-panel: #152542;
+  --rf-ink: #F2EDE2;
+  --rf-ink-strong: #FFFFFF;
+  --rf-ink-dim: #C9C0B4;
+  --rf-ink-faint: #8F99AA;
+  --rf-line: #43516A;
+  --rf-line-2: #5B6880;
+  --rf-row-hover: #20304B;
+  --rf-row-current: #182A49;
+  --fc-copper: #CF7545;
   --rf-glow: radial-gradient(120% 70% at 50% -8%,
               rgba(120, 130, 170, 0.08), transparent 60%);
 
@@ -64,23 +67,18 @@
   --rf-border: var(--rf-line);
   --rf-text: var(--rf-ink);
   --rf-text-dim: var(--rf-ink-dim);
-  --rf-radius: 14px;
-  --rf-bg: #060708;
+  --rf-radius: 9px;
+  --rf-bg: #0F1E3A;
 }
 
 /* light = system */
 @media (prefers-color-scheme: light) {
   :root:not([data-rf-theme="dark"]) {
-    --rf-paper: #f6f3ec;
-    --rf-panel: #fbf9f3;
-    --rf-ink: #1f1d18;
-    --rf-ink-strong: #000000;
-    --rf-ink-dim: #6a6557;
-    --rf-ink-faint: #a39d8b;
-    --rf-line: rgba(31, 29, 24, 0.08);
-    --rf-line-2: rgba(31, 29, 24, 0.18);
-    --rf-row-hover: rgba(31, 29, 24, 0.035);
-    --rf-row-current: rgba(31, 29, 24, 0.025);
+    --rf-paper: #F2EDE2; --rf-paper-2: #FFFDF8; --rf-paper-inset: #F7F2E8;
+    --rf-panel: #FCFAF5; --rf-ink: #2A2A2A; --rf-ink-strong: #0F1E3A;
+    --rf-ink-dim: #675F57; --rf-ink-faint: #8B8177; --rf-line: #C8BDAC;
+    --rf-line-2: #AFA18D; --rf-row-hover: #E9E1D4; --rf-row-current: #FFFDF8;
+    --fc-copper: #B35A2E;
     --rf-glow: radial-gradient(120% 70% at 50% -8%,
                 rgba(255, 230, 190, 0.55), transparent 60%);
 
@@ -88,46 +86,36 @@
     --rf-new: #2f5fb5;
     --rf-learn: #a05f1e;
 
-    --rf-bg: #ffffff;
+    --rf-bg: #F2EDE2;
   }
 }
 
 /* explicit overrides (settings) */
 :root[data-rf-theme="light"] {
-  --rf-paper: #f6f3ec;
-  --rf-panel: #fbf9f3;
-  --rf-ink: #1f1d18;
-  --rf-ink-strong: #000000;
-  --rf-ink-dim: #6a6557;
-  --rf-ink-faint: #a39d8b;
-  --rf-line: rgba(31, 29, 24, 0.08);
-  --rf-line-2: rgba(31, 29, 24, 0.18);
-  --rf-row-hover: rgba(31, 29, 24, 0.035);
-  --rf-row-current: rgba(31, 29, 24, 0.025);
+  --rf-paper: #F2EDE2; --rf-paper-2: #FFFDF8; --rf-paper-inset: #F7F2E8;
+  --rf-panel: #FCFAF5; --rf-ink: #2A2A2A; --rf-ink-strong: #0F1E3A;
+  --rf-ink-dim: #675F57; --rf-ink-faint: #8B8177; --rf-line: #C8BDAC;
+  --rf-line-2: #AFA18D; --rf-row-hover: #E9E1D4; --rf-row-current: #FFFDF8;
+  --fc-copper: #B35A2E;
   --rf-glow: radial-gradient(120% 70% at 50% -8%,
               rgba(255, 230, 190, 0.55), transparent 60%);
   --rf-due: #2f8462;
   --rf-new: #2f5fb5;
   --rf-learn: #a05f1e;
-  --rf-bg: #ffffff;
+  --rf-bg: #F2EDE2;
 }
 :root[data-rf-theme="dark"] {
-  --rf-paper: #0b0c0f;
-  --rf-panel: #121319;
-  --rf-ink: #eceae2;
-  --rf-ink-strong: #ffffff;
-  --rf-ink-dim: #9b978a;
-  --rf-ink-faint: #5d5a51;
-  --rf-line: rgba(236, 234, 226, 0.09);
-  --rf-line-2: rgba(236, 234, 226, 0.18);
-  --rf-row-hover: rgba(236, 234, 226, 0.04);
-  --rf-row-current: rgba(236, 234, 226, 0.03);
+  --rf-paper: #0F1E3A; --rf-paper-2: #182A49; --rf-paper-inset: #0C1930;
+  --rf-panel: #152542; --rf-ink: #F2EDE2; --rf-ink-strong: #FFFFFF;
+  --rf-ink-dim: #C9C0B4; --rf-ink-faint: #8F99AA; --rf-line: #43516A;
+  --rf-line-2: #5B6880; --rf-row-hover: #20304B; --rf-row-current: #182A49;
+  --fc-copper: #CF7545;
   --rf-glow: radial-gradient(120% 70% at 50% -8%,
               rgba(120, 130, 170, 0.08), transparent 60%);
   --rf-due: #79b69b;
   --rf-new: #8bb0e6;
   --rf-learn: #d7a76c;
-  --rf-bg: #060708;
+  --rf-bg: #0F1E3A;
 }
 
 /* Heatmap palette — set as CSS variables so the user's "heatmap_palette"
@@ -176,7 +164,7 @@ body::before {
   z-index: -1;
   background: var(--rf-glow);
 }
-/* D2 Study Cockpit background: only the deck homepage receives artwork.
+/* Fourth Canal background: solid by default; optional artwork stays on home.
    Overview, reviewer, editor, and exam surfaces remain distraction-free. */
 body:has(.ba-home)::before {
   z-index: 0;

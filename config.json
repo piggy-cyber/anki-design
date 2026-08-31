@@ -1,6 +1,6 @@
 {
   "theme": "system",
-  "accent": "#6c8cff",
+  "accent": "#2563EB",
   "density": "comfortable",
   "sidebar_nav": true,
   "show_heatmap": true,
@@ -14,5 +14,5 @@
   "reviewer_font_size": "medium",
   "font_serif": "",
   "font_sans": "",
-  "home_background": "default"
+  "home_background": "solid"
 }

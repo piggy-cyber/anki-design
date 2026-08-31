@@ -1,7 +1,7 @@
 {
-  "name": "D2 Study Lab",
+  "name": "Fourth Canal",
   "package": "anki-design",
-  "human_version": "0.2.1-d2.1",
+  "human_version": "0.2.1-fc.1",
   "min_point_version": 250900,
   "conflicts": [
     "1011095603",

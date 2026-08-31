@@ -213,12 +213,11 @@
     var aside = document.createElement("aside");
     aside.className = "ba-side";
     aside.innerHTML = ''
-      // Personal D2 Study Lab wordmark. Clicking it always returns home.
+      // Fourth Canal identity. Clicking it always returns home.
       + '<div class="ba-side-head">'
-      +   '<span class="d2-wordmark ba-side-mark" aria-label="D2 Study Lab">'
-      +     '<span class="d2-wordmark-mark">D2</span>'
-      +     '<span class="d2-wordmark-rule" aria-hidden="true"></span>'
-      +     '<span class="d2-wordmark-copy">STUDY<br>LAB</span>'
+      +   '<span class="fc-wordmark ba-side-mark" aria-label="Fourth Canal home">'
+      +     '<img class="fc-wordmark-icon" src="/_addons/1809063985/web/assets/fourth-canal-icon.svg" alt="">'
+      +     '<span class="fc-wordmark-copy">FOURTH CANAL</span>'
       +   '</span>'
       + '</div>'
       // Cross-deck totals — hidden in single-deck mode (the hero owns them).

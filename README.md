@@ -1,8 +1,8 @@
-# D2 Study Lab — Anki Design Fork
+# Fourth Canal — Anki Design Fork
 
 Rick's personal D2 study cockpit, maintained as a fork of
 [NoahLloyd/anki-design](https://github.com/NoahLloyd/anki-design). The fork
-keeps the upstream interface while adding the D2 Study Lab wordmark, a
+keeps the upstream interface while adding the Fourth Canal identity, a
 dental-atlas homepage, private background selection, and mock-exam integration.
 
 Private files under `user_files/` are intentionally excluded from Git. Fetch

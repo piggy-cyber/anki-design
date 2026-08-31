@@ -61,26 +61,14 @@ ADDON = __name__.split(".")[0]
 
 # Palettes mirror settings.py so light/dark stays coherent across dialogs.
 PAL_DARK: Dict[str, str] = {
-    "paper": "#0b0c0f",
-    "panel": "#15171c",
-    "ink": "#eceae2",
-    "ink_dim": "#9b978a",
-    "ink_faint": "#5d5a51",
-    "line": "rgba(236,234,226,0.10)",
-    "line2": "rgba(236,234,226,0.20)",
-    "hover": "rgba(236,234,226,0.05)",
-    "field_bg": "#0f1116",
+    "paper": "#0F1E3A", "panel": "#152542", "ink": "#F2EDE2",
+    "ink_dim": "#C9C0B4", "ink_faint": "#8F99AA", "line": "#43516A",
+    "line2": "#5B6880", "hover": "#20304B", "field_bg": "#182A49",
 }
 PAL_LIGHT: Dict[str, str] = {
-    "paper": "#f6f3ec",
-    "panel": "#fbf9f3",
-    "ink": "#1f1d18",
-    "ink_dim": "#6a6557",
-    "ink_faint": "#a39d8b",
-    "line": "rgba(31,29,24,0.10)",
-    "line2": "rgba(31,29,24,0.22)",
-    "hover": "rgba(31,29,24,0.04)",
-    "field_bg": "#ffffff",
+    "paper": "#F2EDE2", "panel": "#FCFAF5", "ink": "#2A2A2A",
+    "ink_dim": "#675F57", "ink_faint": "#8B8177", "line": "#C8BDAC",
+    "line2": "#AFA18D", "hover": "#E9E1D4", "field_bg": "#FFFDF8",
 }
 
 SERIF = '"New York", "Hoefler Text", "Iowan Old Style", Charter, Georgia, serif'

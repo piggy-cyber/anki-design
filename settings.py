@@ -60,7 +60,7 @@ def _icon_url(name: str) -> str:
 
 
 ADDON = __name__.split(".")[0]
-TAB_TITLE = "D2 Study Lab"
+TAB_TITLE = "Fourth Canal"
 PAGE_OBJECT_NAME = "baSettings"
 
 
@@ -82,24 +82,14 @@ def _human_version() -> str:
 # Palettes
 # --------------------------------------------------------------------------- #
 PAL_DARK: Dict[str, str] = {
-    "paper": "#0b0c0f",
-    "panel": "#15171c",
-    "ink": "#eceae2",
-    "ink_dim": "#9b978a",
-    "ink_faint": "#5d5a51",
-    "line": "rgba(236,234,226,0.10)",
-    "line2": "rgba(236,234,226,0.20)",
-    "hover": "rgba(236,234,226,0.05)",
+    "paper": "#0F1E3A", "panel": "#152542", "ink": "#F2EDE2",
+    "ink_dim": "#C9C0B4", "ink_faint": "#8F99AA", "line": "#43516A",
+    "line2": "#5B6880", "hover": "#20304B",
 }
 PAL_LIGHT: Dict[str, str] = {
-    "paper": "#f6f3ec",
-    "panel": "#fbf9f3",
-    "ink": "#1f1d18",
-    "ink_dim": "#6a6557",
-    "ink_faint": "#a39d8b",
-    "line": "rgba(31,29,24,0.10)",
-    "line2": "rgba(31,29,24,0.22)",
-    "hover": "rgba(31,29,24,0.04)",
+    "paper": "#F2EDE2", "panel": "#FCFAF5", "ink": "#2A2A2A",
+    "ink_dim": "#675F57", "ink_faint": "#8B8177", "line": "#C8BDAC",
+    "line2": "#AFA18D", "hover": "#E9E1D4",
 }
 
 
@@ -903,9 +893,12 @@ class AnkiDesignSettingsPage(QWidget):
         self._background_value.setProperty("role", "hint")
         choose_background = QPushButton("Choose image…")
         choose_background.clicked.connect(self._choose_home_background)
-        reset_background = QPushButton("Use D2 default")
+        atlas_background = QPushButton("Use dental atlas")
+        atlas_background.clicked.connect(self._use_atlas_background)
+        reset_background = QPushButton("Use Fourth Canal solid")
         reset_background.clicked.connect(self._reset_home_background)
         bg.addWidget(choose_background)
+        bg.addWidget(atlas_background)
         bg.addWidget(reset_background)
         bg.addWidget(self._background_value, 1)
         self._update_background_label()
@@ -1176,7 +1169,7 @@ class AnkiDesignSettingsPage(QWidget):
         fi = QHBoxLayout(footer_inner)
         fi.setContentsMargins(44, 16, 44, 16)
         fi.setSpacing(16)
-        restore = QPushButton("Restore D2 Study Lab defaults")
+        restore = QPushButton("Restore Fourth Canal defaults")
         restore.setObjectName("quiet")
         restore.setCursor(Qt.CursorShape.PointingHandCursor)
         restore.clicked.connect(self._restore_defaults)
@@ -1257,8 +1250,8 @@ class AnkiDesignSettingsPage(QWidget):
         self._apply_styles()
 
     def _update_background_label(self) -> None:
-        value = str(self._g("home_background", "default"))
-        label = "D2 dental atlas" if not value or value == "default" else os.path.basename(value)
+        value = str(self._g("home_background", "solid"))
+        label = "Fourth Canal solid" if value in ("", "default", "solid") else ("D2 dental atlas" if value == "atlas" else os.path.basename(value))
         try:
             self._background_value.setText(label)
         except Exception:
@@ -1289,14 +1282,18 @@ class AnkiDesignSettingsPage(QWidget):
         self._set("home_background", filename)
         self._update_background_label()
 
+    def _use_atlas_background(self) -> None:
+        self._set("home_background", "atlas")
+        self._update_background_label()
+
     def _reset_home_background(self) -> None:
-        self._set("home_background", "default")
+        self._set("home_background", "solid")
         self._update_background_label()
 
     def _restore_defaults(self) -> None:
         defaults = {
             "theme": "system",
-            "accent": "#6c8cff",
+            "accent": "#2563EB",
             "density": "comfortable",
             "sidebar_nav": True,
             "show_heatmap": True,
@@ -1310,7 +1307,7 @@ class AnkiDesignSettingsPage(QWidget):
             "reviewer_font_size": "medium",
             "font_serif": "",
             "font_sans": "",
-            "home_background": "default",
+            "home_background": "solid",
         }
         self._cfg = defaults
         try:
